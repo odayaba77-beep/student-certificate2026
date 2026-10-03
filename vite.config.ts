@@ -1,33 +1,27 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { viteSingleFile } from 'vite-plugin-singlefile';
 
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    viteSingleFile(),
   ],
+  base: './',
   server: {
     host: '0.0.0.0',
     port: 3000,
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    target: 'esnext',
+    assetsInlineLimit: 100000000,
+    chunkSizeWarningLimit: 10000,
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
-            }
-            if (id.includes('recharts')) {
-              return 'vendor-recharts';
-            }
-            if (id.includes('lucide-react')) {
-              return 'vendor-lucide';
-            }
-          }
-        },
+        inlineDynamicImports: true,
       },
     },
   },
